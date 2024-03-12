@@ -2,6 +2,7 @@
 import pygame
 import numpy as np
 from button import *
+from cursor import *
 
 # pygame setup
 pygame.init()
@@ -20,31 +21,44 @@ running = True
 step = 1
 
 #Buttons
-quit_button = Button("Quit", 20, 20, 50, 30, "grey")
-patterns_button = Button("Patterns", 10, 70, 70, 30, "grey")
+quit_button = Button("Quit", 16,20, 20, 50, 30, "grey")
+stills_button = Button("Stills", 16,10, 70, 70, 30, "grey")
+oscillators_button = Button("Oscillators", 16,10, 130, 70, 30, "grey")
+spaceships_button = Button("Spaceships", 16,10, 190, 70, 30, "grey")
+
 
 #Cell array setup
 rows = int(SCREEN_HEIGHT / 20)
 cols = int(SCREEN_WIDTH / 20)
 cells = np.zeros((rows, cols), dtype=bool)
 
-
-#Update cell to draw a glider to canvas
-def drawGlider(cells, row, col):
-    cells[row][col] = True
-    if col-1>=0:
-        cells[row][col-1] = True
-    if col - 2 >= 0 and row - 1 >= 0:
-        cells[row-1][col-2] = True
-    if row-1 >= 0:
-        cells[row-1][col] = True
-    if row-2 >= 0:
-        cells[row-2][col] = True
-
+#Time
 last_update_cell_time = pygame.time.get_ticks()
 
-while running:
+#Cursor object used for placing and drawing highlight
+cursor = Cursor(screen)
 
+#Patterns
+stills = ["Block", "Beehive", "Loaf", "Boat", "Tub"]
+oscillators = ["Blinker", "Toad", "Beacon", "Pulsar", "Penta-Decathon"]
+spaceships = ["Glider", "Lwss", "Mwss", "Hwss"]
+
+#Current pattern for each group
+current_pattern_group = "Stills" #Current group based on button selected
+current_still = "Block"
+current_oscillator = "Blinker"
+current_spaceship = "Glider"
+
+def updatePattern():
+    if current_pattern_group == "Stills":
+        return current_still
+    elif current_pattern_group == "Oscillators":
+        return current_oscillator
+    else:
+        return current_spaceship
+
+#Main runtime loop
+while running:
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("white")
@@ -115,33 +129,14 @@ while running:
         last_update_cell_time = pygame.time.get_ticks()
 
 
-    #Current mouse position in array
-    m_x, m_y = pygame.mouse.get_pos()
-    curr_row = 0
-    curr_col = 0
-    if m_x < 20:
-        curr_col = 0
-    else:
-        curr_col = int(m_x / 20)
-    if m_y < 20:
-        curr_row = 0
-    else:
-        curr_row = int(m_y / 20)
+    #update cursor to current mouse position
+    cursor.update()
 
-    pygame.draw.rect(screen, HOT_PINK, (curr_col*20, curr_row*20, 20,20), width=2)
+    #update current pattern based on which group is selected
+    current_pattern = updatePattern()
 
-
-    # #Only time step when space is pressed
-    # flag = True
-    # while flag:
-        # for event in pygame.event.get():
-            # if event.type == pygame.QUIT:
-                # running = False
-                # flag = False
-            # elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                # flag = False
-                # step += 1
-                # print(step)
+    #draw current pattern selected highlight on canvas
+    cursor.drawHighlight(current_pattern)
 
 
     for event in pygame.event.get():
@@ -153,13 +148,22 @@ while running:
             cells = np.zeros((rows, cols), dtype=bool)
         elif event.type == pygame.MOUSEBUTTONDOWN and quit_button.is_clicked():
             running = False
+        elif event.type == pygame.MOUSEBUTTONDOWN and stills_button.is_clicked():
+            current_pattern_group = "Stills"
+        elif event.type == pygame.MOUSEBUTTONDOWN and oscillators_button.is_clicked():
+            current_pattern_group = "Oscillators"
+        elif event.type == pygame.MOUSEBUTTONDOWN and spaceships_button.is_clicked():
+            current_pattern_group = "Spaceships"
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            drawGlider(cells, curr_row, curr_col)
+            cursor.placePattern(cells, current_pattern) 
+            # drawGlider(cells, curr_row, curr_col)
 
 
     #Draw in Buttons on top of screen
-    quit_button.draw(screen)
-    patterns_button.draw(screen)
+    quit_button.draw(screen, current_pattern_group)
+    stills_button.draw(screen, current_pattern_group)
+    oscillators_button.draw(screen, current_pattern_group)
+    spaceships_button.draw(screen, current_pattern_group)
 
     # flip() the display to put your work on screen
     pygame.display.flip()
