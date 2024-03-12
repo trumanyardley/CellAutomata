@@ -21,10 +21,10 @@ running = True
 step = 1
 
 #Buttons
-quit_button = Button("Quit", 16,20, 20, 50, 30, "grey")
-stills_button = Button("Stills", 16,10, 70, 70, 30, "grey")
-oscillators_button = Button("Oscillators", 16,10, 130, 70, 30, "grey")
-spaceships_button = Button("Spaceships", 16,10, 190, 70, 30, "grey")
+quit_button = Button("Quit", 12,20, 20, 50, 30, (128,128,128))
+stills_button = Button("Stills", 12,10, 70, 70, 30, (128,128,128))
+oscillators_button = Button("Oscillators", 12,10, 130, 70, 30, (128,128,128))
+spaceships_button = Button("Spaceships", 12,10, 190, 70, 30, (128,128,128))
 
 
 #Cell array setup

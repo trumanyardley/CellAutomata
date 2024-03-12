@@ -18,7 +18,7 @@ class Button:
         if current_pattern_group == self.text:
             self.color = DARK_GREY
         else:
-            self.color = "grey"
+            self.color = (128,128,128)
         #Hover effect
         m_x, m_y = pygame.mouse.get_pos()
         if m_x >= self.x and m_x <= self.x + self.width and m_y >= self.y and m_y <= self.y + self.height:
