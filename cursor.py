@@ -3,6 +3,33 @@ import pygame
 #Constants
 HOT_PINK = (255, 87, 51) #Color RGB
 
+patterns = {
+        "Block": [(0, 0), (-1, 0), (0, -1), (-1, -1)],
+        "Beehive": [(0, 0), (-1, -1), (-2, -1), (-3, 0), (-1, 1), (-2, 1)],
+        "Loaf": [(0, 0), (-1, 0), (-2, 1), (-1, 2), (0, 3), (1, 2), (1, 1)],
+        "Boat": [(0, 0), (1, 0), (0, 1), (2, 1), (1, 2)],
+        "Tub": [(-1, 0), (1, 0), (0, -1), (0, 1)],
+        "Blinker": [(0, 0), (0, -1), (0, 1)],
+        "Toad": [(0, 0), (-1, 0), (-2, 0), (-1, -1), (0, -1), (1, -1)],
+        "Beacon": [(0, 0), (1, 0), (0, 1), (3, 3), (3, 2), (2, 3)],
+        "Pulsar": [(-2, -1), (-3, -1), (-4, -1), (2, -1), (3, -1), (4, -1),
+                   (-2, 1), (-3, 1), (-4, 1), (2, 1), (3, 1), (4, 1),
+                   (-1, 2), (-1, 3), (-1, 4), (-1, -2), (-1, -3), (-1, -4),
+                   (1, 2), (1, 3), (1, 4), (1, -2), (1, -3), (1, -4),
+                   (2, -6), (3, -6), (4, -6), (-2, -6), (-3, -6), (-4, -6),
+                   (2, 6), (3, 6), (4, 6), (-2, 6), (-3, 6), (-4, 6),
+                   (6, -2), (6, -3), (6, -4), (-6, -2), (-6, -3), (-6, -4),
+                   (6, 2), (6, 3), (6, 4), (-6, 2), (-6, 3), (-6, 4)],
+        "Penta-Decathon": [(0, 0), (-1, 0), (1, 0), (0, 1), (-1, 1), (1, 1),
+                           (0, -2), (-1, -2), (1, -2), (0, 3), (-1, 3), (1, 3),
+                           (0, -3), (0, -4), (0, -5), (0, 4), (0, 5), (0, 6),
+                           (-1, 6), (1, 6), (1, -5), (-1, -5)],
+        "Glider": [(0, 0), (-1, 0), (-2, -1), (0, -1), (0, -2)],
+        "Lwss": [(0, 0), (0, -1), (0, -2), (1, -3), (1, 0), (2, 0), (3, 0), (4, -1), (4, -3)],
+        "Mwss": [(0, 0), (-1, 0), (-2, 0), (-3, 0), (-4, 0), (0, 1), (0, 2), (-1, 3), (-3, 4), (-5, 1), (-5, 3)],
+        "Hwss": [(0, 0), (-1, 0), (-2, 0), (-3, 0), (-4, 0), (-5, 0), (0, -1), (0, -2), (-6, -1), (-6, -3), (-1, -3), (-3, -4), (-4, -4)]
+        # Add more patterns as needed
+    }
 
 class Cursor:
     def __init__(self, screen):
@@ -12,8 +39,8 @@ class Cursor:
         self.curr_col = 0
         self.curr_row = 0
         screen_info = pygame.display.Info()
-        self.max_rows = (screen_info.current_w / 20)
-        self.max_cols = (screen_info.current_h / 20)
+        self.max_rows = (screen_info.current_h / 20)
+        self.max_cols = (screen_info.current_w / 20)
 
     #Update cursor x,y position to where mouse is and the row and columns its at
     def update(self):
@@ -28,197 +55,12 @@ class Cursor:
             self.curr_row = int(self.y / 20)
 
 
-    #This is going to be tedious, kms
     def drawHighlight(self, current_pattern):
-        if current_pattern == "Block":
-            pygame.draw.rect(self.screen, HOT_PINK, (self.curr_col*20, self.curr_row*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, self.curr_row*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row-1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, (self.curr_col*20, (self.curr_row-1)*20, 20,20), width=2)
-        elif current_pattern == "Beehive": 
-            pygame.draw.rect(self.screen, HOT_PINK, (self.curr_col*20, self.curr_row*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row-1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-2)*20, (self.curr_row-1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-3)*20, self.curr_row*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row+1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-2)*20, (self.curr_row+1)*20, 20,20), width=2)
-        elif current_pattern == "Loaf":
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-2)*20, (self.curr_row+1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row+2)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row+3)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+1)*20, (self.curr_row+2)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+1)*20, (self.curr_row+1)*20, 20,20), width=2)
-        elif current_pattern == "Boat":
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+1)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row+1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+2)*20, (self.curr_row+1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+1)*20, (self.curr_row+2)*20, 20,20), width=2)
-        elif current_pattern == "Tub":
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+1)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row-1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row+1)*20, 20,20), width=2)
-        elif current_pattern == "Blinker":
-            pygame.draw.rect(self.screen, HOT_PINK, (self.curr_col*20, self.curr_row*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, (self.curr_col*20, (self.curr_row-1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, (self.curr_col*20, (self.curr_row+1)*20, 20,20), width=2)
-        elif current_pattern == "Toad":
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-2)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row-1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row-1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+1)*20, (self.curr_row-1)*20, 20,20), width=2)
-        elif current_pattern == "Beacon":
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+1)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row+1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+3)*20, (self.curr_row+3)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+3)*20, (self.curr_row+2)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+2)*20, (self.curr_row+3)*20, 20,20), width=2)
-        #this is going to be awful to implement in placePattern
-        elif current_pattern == "Pulsar":
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-2)*20, (self.curr_row-1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-3)*20, (self.curr_row-1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-4)*20, (self.curr_row-1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+2)*20, (self.curr_row-1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+3)*20, (self.curr_row-1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+4)*20, (self.curr_row-1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-2)*20, (self.curr_row+1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-3)*20, (self.curr_row+1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-4)*20, (self.curr_row+1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+2)*20, (self.curr_row+1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+3)*20, (self.curr_row+1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+4)*20, (self.curr_row+1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row+2)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row+3)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row+4)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row-2)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row-3)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row-4)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+1)*20, (self.curr_row+2)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+1)*20, (self.curr_row+3)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+1)*20, (self.curr_row+4)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+1)*20, (self.curr_row-2)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+1)*20, (self.curr_row-3)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+1)*20, (self.curr_row-4)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+2)*20, (self.curr_row-6)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+3)*20, (self.curr_row-6)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+4)*20, (self.curr_row-6)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-2)*20, (self.curr_row-6)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-3)*20, (self.curr_row-6)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-4)*20, (self.curr_row-6)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+2)*20, (self.curr_row+6)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+3)*20, (self.curr_row+6)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+4)*20, (self.curr_row+6)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-2)*20, (self.curr_row+6)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-3)*20, (self.curr_row+6)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-4)*20, (self.curr_row+6)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+6)*20, (self.curr_row-2)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+6)*20, (self.curr_row-3)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+6)*20, (self.curr_row-4)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-6)*20, (self.curr_row-2)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-6)*20, (self.curr_row-3)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-6)*20, (self.curr_row-4)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+6)*20, (self.curr_row+2)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+6)*20, (self.curr_row+3)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+6)*20, (self.curr_row+4)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-6)*20, (self.curr_row+2)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-6)*20, (self.curr_row+3)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-6)*20, (self.curr_row+4)*20, 20,20), width=2)
-        elif current_pattern == "Penta-Decathon":
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+1)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row+1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row+1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+1)*20, (self.curr_row+1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row-2)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row-2)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+1)*20, (self.curr_row-2)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row+3)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row+3)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+1)*20, (self.curr_row+3)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row-3)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row-4)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row-5)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row+4)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row+5)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row+6)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row+6)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+1)*20, (self.curr_row+6)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+1)*20, (self.curr_row-5)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row-5)*20, 20,20), width=2)
-        elif current_pattern == "Glider":
-            pygame.draw.rect(self.screen, HOT_PINK, (self.curr_col*20, self.curr_row*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, self.curr_row*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-2)*20, (self.curr_row-1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, (self.curr_col*20, (self.curr_row-1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, (self.curr_col*20, (self.curr_row-2)*20, 20,20), width=2)
-        elif current_pattern == "Lwss":
-            pygame.draw.rect(self.screen, HOT_PINK, (self.curr_col*20, self.curr_row*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row-1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row-2)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+1)*20, (self.curr_row-3)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+1)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+2)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+3)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+4)*20, (self.curr_row-1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col+4)*20, (self.curr_row-3)*20, 20,20), width=2)
-        elif current_pattern == "Mwss":
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-2)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-3)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-4)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row+1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row+2)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row+3)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-3)*20, (self.curr_row+4)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-5)*20, (self.curr_row+1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-5)*20, (self.curr_row+3)*20, 20,20), width=2)
-        elif current_pattern == "Hwss":
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-2)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-3)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-4)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-5)*20, (self.curr_row)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row-1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col)*20, (self.curr_row-2)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-6)*20, (self.curr_row-1)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-6)*20, (self.curr_row-3)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-1)*20, (self.curr_row-3)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-3)*20, (self.curr_row-4)*20, 20,20), width=2)
-            pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col-4)*20, (self.curr_row-4)*20, 20,20), width=2)
+        for rel_row, rel_col in patterns.get(current_pattern, []):
+                pygame.draw.rect(self.screen, HOT_PINK, ((self.curr_col + rel_col) * 20, (self.curr_row + rel_row) * 20, 20, 20), width=2)
 
-    #This is going to be even more tedious fuuuukkkkkk
     def placePattern(self, cells, current_pattern):
-        if current_pattern == "Block":
-            cells[self.curr_row][self.curr_col] = True
-            if self.curr_col-1>=0:
-                cells[self.curr_row][self.curr_col-1] = True
-            if self.curr_row-1 >= 0:
-                cells[self.curr_row-1][self.curr_col] = True
-            if self.curr_row-1 >= 0 and self.curr_col >= 0:
-                cells[self.curr_row-1][self.curr_col-1] = True
-        elif current_pattern == "Blinker":
-            cells[self.curr_row][self.curr_col] = True
-            if self.curr_row+1 < self.max_rows:
-                cells[self.curr_row+1][self.curr_col] = True
-            if self.curr_row-1 >= 0:
-                cells[self.curr_row-1][self.curr_col] = True
-        elif current_pattern == "Glider":
-            cells[self.curr_row][self.curr_col] = True
-            if self.curr_col-1>=0:
-                cells[self.curr_row][self.curr_col-1] = True
-            if self.curr_col - 2 >= 0 and self.curr_row - 1 >= 0:
-                cells[self.curr_row-1][self.curr_col-2] = True
-            if self.curr_row-1 >= 0:
-                cells[self.curr_row-1][self.curr_col] = True
-            if self.curr_row-2 >= 0:
-                cells[self.curr_row-2][self.curr_col] = True
-
+        for rel_row, rel_col in patterns.get(current_pattern, []):
+            row, col = self.curr_row + rel_row, self.curr_col + rel_col
+            if 0 <= row < self.max_rows and 0 <= col < self.max_cols:
+                cells[row][col] = True
