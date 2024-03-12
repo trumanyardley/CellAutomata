@@ -57,6 +57,7 @@ def updatePattern():
     else:
         return current_spaceship
 
+
 #Main runtime loop
 while running:
 
@@ -138,7 +139,7 @@ while running:
     #draw current pattern selected highlight on canvas
     cursor.drawHighlight(current_pattern)
 
-
+    #Event detection
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -146,6 +147,19 @@ while running:
             running = False
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_BACKSPACE:
             cells = np.zeros((rows, cols), dtype=bool)
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
+            if current_pattern_group == "Stills":
+                currInd = stills.index(current_still)
+                current_still = stills[(currInd + 1) % len(stills)]
+                current_pattern = current_still 
+            elif current_pattern_group == "Oscillators":
+                currInd = oscillators.index(current_oscillator)
+                current_oscillator = oscillators[(currInd + 1) % len(oscillators)]
+                current_pattern = current_oscillator
+            else:
+                currInd = spaceships.index(current_spaceship)
+                current_spaceship = spaceships[(currInd + 1) % len(spaceships)]
+                current_pattern = current_spaceship
         elif event.type == pygame.MOUSEBUTTONDOWN and quit_button.is_clicked():
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN and stills_button.is_clicked():
@@ -156,7 +170,6 @@ while running:
             current_pattern_group = "Spaceships"
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             cursor.placePattern(cells, current_pattern) 
-            # drawGlider(cells, curr_row, curr_col)
 
 
     #Draw in Buttons on top of screen
